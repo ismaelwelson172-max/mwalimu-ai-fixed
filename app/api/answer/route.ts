@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     const { grade, question } = await req.json();
     
     const { text } = await generateText({
-      model: google('gemini-2.0-flash'),
+      model: google('gemini-3.8-flash'),
       system: 'You are Mwalimu AI, a helpful Kenyan teacher. Explain clearly for the grade given.',
       prompt: `Grade: ${grade}\nQuestion: ${question}\nAnswer in simple, clear Swahili and English mix.`,
     });
