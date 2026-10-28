@@ -1,19 +1,33 @@
-import { google } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: Request) {
   try {
-    const { grade, question } = await req.json();
+    const { question } = await req.json();
     
-    const { text } = await generateText({
-      model: google('gemini-3.8-flash'),
-      system: 'You are Mwalimu AI, a helpful Kenyan teacher. Explain clearly for the grade given.',
-      prompt: `Grade: ${grade}\nQuestion: ${question}\nAnswer in simple, clear Swahili and English mix.`,
-    });
+    if (!question) {
+      return new Response(JSON.stringify({ error: "No question" }), { status: 400 });
+    }
 
-    return Response.json({ answer: text });
-  } catch (error) {
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: "No API Key" }), { status: 500 });
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const result = await model.generateContent(
+      `Wewe ni Mwalimu AI. Jibu swali hili kwa Kiswahili rahisi: ${question}`
+    );
+    
+    const text = result.response.text();
+
+    return new Response(JSON.stringify({ answer: text }), {
+      headers: { "Content-Type": "application/json" },
+    });
+    
+  } catch (error: any) {
     console.error(error);
-    return Response.json({ error: 'Failed' }, { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
