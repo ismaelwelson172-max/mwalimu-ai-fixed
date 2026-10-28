@@ -1,0 +1,18 @@
+{
+  "name": "mwalimu-ai-fixed",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "ai": "^4.3.0",
+    "@ai-sdk/google": "^1.2.0",
+    "zod": "^3.23.0"
+  }
+}
